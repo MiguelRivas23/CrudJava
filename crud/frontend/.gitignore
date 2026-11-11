@@ -1,0 +1,16 @@
+# Dependencias
+node_modules/
+
+# Build y caché de Angular
+dist/
+.angular/
+out-tsc/
+
+# IDE
+.idea/
+.vscode/*
+*.iml
+
+# Logs
+npm-debug.log*
+yarn-error.log
