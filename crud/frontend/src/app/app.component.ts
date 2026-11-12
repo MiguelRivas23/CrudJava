@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Persona } from './persona.model';
-import { PersonaService } from './persona.service';
+import { Departamento } from './departamento.model';
+import { DepartamentoService } from './departamento.service';
 import { AuthService } from './auth.service';
 import { LoginComponent } from './login.component';
 
@@ -13,15 +13,15 @@ import { LoginComponent } from './login.component';
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
-  private service = inject(PersonaService);
+  private service = inject(DepartamentoService);
   auth = inject(AuthService);
 
-  personas: Persona[] = [];
+  departamentos: Departamento[] = [];
   busqueda = '';
   error = '';
 
   // Formulario (sirve para crear y editar)
-  form: Persona = { nombre: '', edad: null };
+  form: Departamento = this.formVacio();
   editandoId: number | null = null;
 
   ngOnInit(): void {
@@ -30,9 +30,13 @@ export class AppComponent implements OnInit {
     }
   }
 
+  private formVacio(): Departamento {
+    return { nombre: '', municipios: [{ nombre: '' }] };
+  }
+
   cerrarSesion(): void {
     this.auth.logout();
-    this.personas = [];
+    this.departamentos = [];
     this.busqueda = '';
     this.error = '';
     this.cancelar();
@@ -41,7 +45,7 @@ export class AppComponent implements OnInit {
   cargar(): void {
     this.service.listar(this.busqueda).subscribe({
       next: (data) => {
-        this.personas = data;
+        this.departamentos = data;
         this.error = '';
       },
       error: (err) => {
@@ -62,6 +66,16 @@ export class AppComponent implements OnInit {
     this.cargar();
   }
 
+  agregarMunicipio(): void {
+    this.form.municipios.push({ nombre: '' });
+  }
+
+  quitarMunicipio(i: number): void {
+    if (this.form.municipios.length > 1) {
+      this.form.municipios.splice(i, 1);
+    }
+  }
+
   guardar(): void {
     this.error = '';
 
@@ -76,30 +90,37 @@ export class AppComponent implements OnInit {
         this.cargar();
       },
       error: (err) => {
+        if (err.status === 401) return;
         const detalles = err?.error && typeof err.error === 'object' ? Object.values(err.error) : [];
         this.error = detalles.length ? detalles.join(' · ') : 'Error al guardar';
       }
     });
   }
 
-  editar(p: Persona): void {
-    this.editandoId = p.id ?? null;
-    this.form = { nombre: p.nombre, edad: p.edad };
+  editar(d: Departamento): void {
+    this.editandoId = d.id ?? null;
+    // copia para no modificar la fila de la tabla mientras se edita
+    this.form = {
+      nombre: d.nombre,
+      municipios: d.municipios.map((m) => ({ id: m.id, nombre: m.nombre }))
+    };
     this.error = '';
   }
 
-  eliminar(p: Persona): void {
-    if (p.id === undefined) return;
-    if (!confirm(`¿Eliminar a ${p.nombre}?`)) return;
+  eliminar(d: Departamento): void {
+    if (d.id === undefined) return;
+    if (!confirm(`¿Eliminar el departamento ${d.nombre} y sus municipios?`)) return;
 
-    this.service.eliminar(p.id).subscribe({
+    this.service.eliminar(d.id).subscribe({
       next: () => this.cargar(),
-      error: () => (this.error = 'No se pudo eliminar')
+      error: (err) => {
+        if (err.status !== 401) this.error = 'No se pudo eliminar';
+      }
     });
   }
 
   cancelar(): void {
     this.editandoId = null;
-    this.form = { nombre: '', edad: null };
+    this.form = this.formVacio();
   }
 }

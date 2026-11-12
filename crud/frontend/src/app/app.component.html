@@ -3,7 +3,7 @@
 } @else {
 <main class="contenedor">
   <div class="encabezado">
-    <h1>CRUD de Personas</h1>
+    <h1>Departamentos y Municipios</h1>
     <button type="button" class="secundario" (click)="cerrarSesion()">Cerrar sesión</button>
   </div>
 
@@ -12,14 +12,41 @@
   }
 
   <section class="tarjeta">
-    <h2>{{ editandoId === null ? 'Agregar persona' : 'Editar persona #' + editandoId }}</h2>
-    <form (ngSubmit)="guardar()" #f="ngForm" class="fila">
-      <input name="nombre" placeholder="Nombre" [(ngModel)]="form.nombre" required />
-      <input name="edad" type="number" placeholder="Edad" min="0" max="150" [(ngModel)]="form.edad" required />
-      <button type="submit" [disabled]="f.invalid">{{ editandoId === null ? 'Agregar' : 'Guardar cambios' }}</button>
-      @if (editandoId !== null) {
-        <button type="button" class="secundario" (click)="cancelar()">Cancelar</button>
+    <h2>{{ editandoId === null ? 'Agregar departamento' : 'Editar departamento #' + editandoId }}</h2>
+    <form (ngSubmit)="guardar()" #f="ngForm">
+      <div class="fila">
+        <input name="nombre" placeholder="Nombre del departamento" [(ngModel)]="form.nombre" required />
+      </div>
+
+      <h3>Municipios</h3>
+      @for (m of form.municipios; track $index; let i = $index) {
+        <div class="fila municipio">
+          <input
+            [name]="'municipio' + i"
+            placeholder="Nombre del municipio"
+            [(ngModel)]="m.nombre"
+            required
+          />
+          <button
+            type="button"
+            class="peligro"
+            (click)="quitarMunicipio(i)"
+            [disabled]="form.municipios.length === 1"
+          >
+            Quitar
+          </button>
+        </div>
       }
+
+      <div class="fila botones">
+        <button type="button" class="secundario" (click)="agregarMunicipio()">+ Agregar municipio</button>
+        <button type="submit" [disabled]="f.invalid">
+          {{ editandoId === null ? 'Guardar departamento' : 'Guardar cambios' }}
+        </button>
+        @if (editandoId !== null) {
+          <button type="button" class="secundario" (click)="cancelar()">Cancelar</button>
+        }
+      </div>
     </form>
   </section>
 
@@ -27,7 +54,7 @@
     <h2>Buscar por nombre</h2>
     <div class="fila">
       <input
-        placeholder="Escribe un nombre..."
+        placeholder="Escribe un departamento..."
         [(ngModel)]="busqueda"
         (keyup.enter)="buscar()"
       />
@@ -41,25 +68,29 @@
       <thead>
         <tr>
           <th>ID</th>
-          <th>Nombre</th>
-          <th>Edad</th>
+          <th>Departamento</th>
+          <th>Municipios</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        @for (p of personas; track p.id) {
+        @for (d of departamentos; track d.id) {
           <tr>
-            <td>{{ p.id }}</td>
-            <td>{{ p.nombre }}</td>
-            <td>{{ p.edad }}</td>
+            <td>{{ d.id }}</td>
+            <td>{{ d.nombre }}</td>
+            <td>
+              @for (m of d.municipios; track m.id) {
+                <span class="chip">{{ m.nombre }}</span>
+              }
+            </td>
             <td class="acciones">
-              <button type="button" class="secundario" (click)="editar(p)">Editar</button>
-              <button type="button" class="peligro" (click)="eliminar(p)">Eliminar</button>
+              <button type="button" class="secundario" (click)="editar(d)">Editar</button>
+              <button type="button" class="peligro" (click)="eliminar(d)">Eliminar</button>
             </td>
           </tr>
         } @empty {
           <tr>
-            <td colspan="4" class="vacio">No hay personas para mostrar</td>
+            <td colspan="4" class="vacio">No hay departamentos para mostrar</td>
           </tr>
         }
       </tbody>

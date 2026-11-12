@@ -1,43 +1,39 @@
-# CRUD de Personas — Spring Boot + Angular + H2
+# CRUD Departamentos y Municipios — Spring Boot + Angular + Oracle (JWT)
 
-Persona: `id`, `nombre`, `edad`. Permite agregar, editar, eliminar y buscar por nombre.
+- `departamento` (id, nombre) 1 → N `municipio` (id, nombre, departamento_id)
+- `usuarios` (id, username, password cifrada con BCrypt)
+- Login con JWT: usuario `admin`, contraseña `pass`
 
 ## Requisitos
 - Java 17+ y Maven
 - Node.js 18.19+ (o 20+) y npm
+- Oracle Database (XE 18c/21c u otra) en `localhost:1521`
 
-## 1. Backend (puerto 8080)
+## 1. Base de datos Oracle
+Ejecuta `oracle/crear_crud_db.sql` (paso 1 como SYSTEM, paso 2 como `crud_db`).
+Ajusta la URL en `backend/src/main/resources/application.properties` si tu servicio no es `XEPDB1`.
+
+## 2. Backend (puerto 8080)
 ```bash
 cd backend
 mvn spring-boot:run
 ```
-- API: `http://localhost:8080/api/personas`
-- Consola H2: `http://localhost:8080/h2-console`
-  - JDBC URL: `jdbc:h2:file:./data/personasdb`
-  - Usuario: `sa` — Contraseña: (vacía)
-- Los datos se guardan en `backend/data/` y persisten al reiniciar.
+La primera vez crea el usuario `admin` (con la contraseña `pass` guardada como hash BCrypt).
 
-## 2. Frontend (puerto 4200)
+## 3. Frontend (puerto 4200)
 ```bash
 cd frontend
 npm install
 npm start
 ```
-Abre `http://localhost:4200`.
+Abre `http://localhost:4200` e inicia sesión con `admin` / `pass`.
 
-## Endpoints
+## Endpoints (requieren `Authorization: Bearer <token>`)
 | Método | URL | Descripción |
 |--------|-----|-------------|
-| GET | `/api/personas` | Lista todas |
-| GET | `/api/personas?nombre=ana` | Busca por nombre (contiene, sin distinguir mayúsculas) |
-| GET | `/api/personas/{id}` | Obtiene una |
-| POST | `/api/personas` | Crea (`{"nombre":"Ana","edad":30}`) |
-| PUT | `/api/personas/{id}` | Edita |
-| DELETE | `/api/personas/{id}` | Elimina |
-
-## Estructura
-```
-crud/
-├── backend/   (Spring Boot: model, repository, controller)
-└── frontend/  (Angular 18 standalone: servicio + componente)
-```
+| POST | `/api/auth/login` | Devuelve el token (público) |
+| GET | `/api/departamentos` | Lista (con `?nombre=` para buscar) |
+| GET | `/api/departamentos/{id}` | Obtiene uno |
+| POST | `/api/departamentos` | Crea `{"nombre":"..","municipios":[{"nombre":".."}]}` |
+| PUT | `/api/departamentos/{id}` | Edita departamento y sus municipios |
+| DELETE | `/api/departamentos/{id}` | Elimina (y sus municipios) |
