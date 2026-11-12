@@ -102,12 +102,18 @@ export class LoginComponent {
   error = '';
 
   entrar(): void {
-    if (this.auth.login(this.usuario, this.password)) {
-      this.error = '';
-      this.password = '';
-      this.ingreso.emit();
-    } else {
-      this.error = 'Usuario o contraseña incorrectos';
-    }
+    this.auth.login(this.usuario, this.password).subscribe({
+      next: () => {
+        this.error = '';
+        this.password = '';
+        this.ingreso.emit();
+      },
+      error: (err) => {
+        this.error =
+          err.status === 401
+            ? 'Usuario o contraseña incorrectos'
+            : 'No se pudo conectar con el servidor (¿está corriendo el backend?)';
+      }
+    });
   }
 }

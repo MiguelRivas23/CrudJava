@@ -11,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/personas")
-@CrossOrigin(origins = "http://localhost:4200")
 public class PersonaController {
 
     private final PersonaRepository repository;

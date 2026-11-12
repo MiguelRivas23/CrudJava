@@ -1,0 +1,10 @@
+C:\Cursos\ProyectosRepo\CrudJava\crud\backend\src\main\java\com\ejemplo\crud\config\SecurityConfig.java
+C:\Cursos\ProyectosRepo\CrudJava\crud\backend\src\main\java\com\ejemplo\crud\config\UsuarioConfig.java
+C:\Cursos\ProyectosRepo\CrudJava\crud\backend\src\main\java\com\ejemplo\crud\controller\AuthController.java
+C:\Cursos\ProyectosRepo\CrudJava\crud\backend\src\main\java\com\ejemplo\crud\controller\ManejadorErrores.java
+C:\Cursos\ProyectosRepo\CrudJava\crud\backend\src\main\java\com\ejemplo\crud\controller\PersonaController.java
+C:\Cursos\ProyectosRepo\CrudJava\crud\backend\src\main\java\com\ejemplo\crud\CrudApplication.java
+C:\Cursos\ProyectosRepo\CrudJava\crud\backend\src\main\java\com\ejemplo\crud\model\Persona.java
+C:\Cursos\ProyectosRepo\CrudJava\crud\backend\src\main\java\com\ejemplo\crud\repository\PersonaRepository.java
+C:\Cursos\ProyectosRepo\CrudJava\crud\backend\src\main\java\com\ejemplo\crud\security\JwtAuthFilter.java
+C:\Cursos\ProyectosRepo\CrudJava\crud\backend\src\main\java\com\ejemplo\crud\security\JwtService.java

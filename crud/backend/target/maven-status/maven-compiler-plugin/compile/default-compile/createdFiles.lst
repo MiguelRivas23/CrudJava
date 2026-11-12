@@ -1,0 +1,12 @@
+com\ejemplo\crud\config\SecurityConfig.class
+com\ejemplo\crud\repository\PersonaRepository.class
+com\ejemplo\crud\controller\AuthController$LoginResponse.class
+com\ejemplo\crud\controller\ManejadorErrores.class
+com\ejemplo\crud\config\UsuarioConfig.class
+com\ejemplo\crud\controller\AuthController$LoginRequest.class
+com\ejemplo\crud\controller\AuthController.class
+com\ejemplo\crud\security\JwtAuthFilter.class
+com\ejemplo\crud\model\Persona.class
+com\ejemplo\crud\CrudApplication.class
+com\ejemplo\crud\controller\PersonaController.class
+com\ejemplo\crud\security\JwtService.class

@@ -40,8 +40,16 @@ export class AppComponent implements OnInit {
 
   cargar(): void {
     this.service.listar(this.busqueda).subscribe({
-      next: (data) => (this.personas = data),
-      error: () => (this.error = 'No se pudo conectar con el servidor (¿está corriendo el backend?)')
+      next: (data) => {
+        this.personas = data;
+        this.error = '';
+      },
+      error: (err) => {
+        // 401: el interceptor ya cerró la sesión y se muestra el login
+        if (err.status !== 401) {
+          this.error = 'No se pudo conectar con el servidor (¿está corriendo el backend?)';
+        }
+      }
     });
   }
 
